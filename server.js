@@ -2,7 +2,8 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const puppeteer = require('puppeteer')
+const puppeteer = require('puppeteer');
+const fs = require('fs');
 var mongoose = require('mongoose');
 
 //set our port
@@ -14,19 +15,20 @@ mongoose.connect(db.url);
 
 // update dbs
 
+var courses = [];
+
 async function scrapeCourses(url){
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto(url);
 
-  var courses = [];
   var j = 2;
 
   while(true){
 
     var course = {Code: '', Title: '', Availability: '', Description: '', Offerings: '', Prerequisites: '', Restrictions: ''}
-
-    const [el] = await page.$x('//*[@id="content"]/div['+ j +']/table/tbody/tr[1]/th/a');
+    
+    const [el] = await page.$x('//*[@id="content"]/div['+ j +']/table/tbody/tr[1]/th');
 
     if(el == null){
       break;
@@ -95,7 +97,27 @@ async function scrapeCourses(url){
 
 }
 
-scrapeCourses('https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/c12cis.shtml');
+async function checkIfUpdated(url){
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.goto(url);
+
+  const [el] = await page.$x('//*[@id="content"]/div[1]/h1');
+  const version = await el.getProperty('textContent');
+  const rawVersion = await version.jsonValue();
+
+  if(db.Version != rawVersion){
+    db.Version = rawVersion.trim();
+
+    fs.writeFile('./config/db.js', "module.exports = {url : 'mongodb://localhost:27017/test', Version: '"+ rawVersion.trim() +"'}", (err) => {if (err) throw err;});
+
+    console.log('Updating database....');
+    //scrapeCourses('https://www.uoguelph.ca/registrar/calendars/undergraduate/current/c12/c12cis.shtml');
+  }
+
+}
+
+checkIfUpdated('https://www.uoguelph.ca/registrar/calendars/undergraduate/current/');
 
 //front end routes
 app.get('/', function(req, res) {
