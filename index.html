@@ -2,14 +2,56 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Guelph Career Planner</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="Bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheetmap" href="Bootstrap/css/bootstrap.min.css.map">
 
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular/angular-route.min.js"></script>
-    <script src="app.js"></script>
 
+    <script src="Bootstrap/js/bootstrap.min.js"></script>
+    <script src="app.js"></script>
   </head>
   <body ng-app="UniCoursePlanner" ng-controller="TestController">
-
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Guelph Career Planner</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Planner <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Course Map</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <br/>
+    <div class="card" style="margin-left: auto; margin-right: auto; width: 80%;">
+      <div class="card-header">
+          Semester 1 (Fall)
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">CIS*1500</li>
+          <li class="list-group-item">CIS*1250</li>
+          <li class="list-group-item">CIS*1000</li>
+        </ul>
+    </div>
+    <br/>
+    <div class="card" style="margin-left: auto; margin-right: auto; width: 80%;">
+      <div class="card-header">
+          Semester 1 (Fall)
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">CIS*1500</li>
+          <li class="list-group-item">CIS*1250</li>
+          <li class="list-group-item">CIS*1000</li>
+        </ul>
+    </div>
   </body>
 </html>

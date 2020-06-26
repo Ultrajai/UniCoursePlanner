@@ -1,1 +1,1 @@
-module.exports = {url : 'mongodb://localhost:27017/test', Version: '-'}
+module.exports = {url : 'mongodb://localhost:27017/test', Version: '2020-2021 Undergraduate Calendar'}

@@ -4,6 +4,7 @@ const app = express();
 const path = require('path');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
+const {exec} = require('child_process');
 var mongoose = require('mongoose');
 
 //set our port
@@ -88,7 +89,7 @@ async function scrapeCourses(url, browser){
     indexCourses += 1;
   }
 
-  console.log(courses)
+  //console.log(courses)
 
 
 }
@@ -108,7 +109,7 @@ async function checkIfUpdated(url){
   if(db.Version != rawVersion.trim()){
     db.Version = rawVersion.trim();
 
-    //fs.writeFile('./config/db.js', "module.exports = {url : 'mongodb://localhost:27017/test', Version: '"+ rawVersion.trim() +"'}", (err) => {if (err) throw err;});
+    fs.writeFile('./config/db.js', "module.exports = {url : 'mongodb://localhost:27017/test', Version: '"+ rawVersion.trim() +"'}", (err) => {if (err) throw err;});
 
     console.log('Updating database....');
     const page2 = await browser.newPage();
@@ -119,7 +120,6 @@ async function checkIfUpdated(url){
       const [el2] = await page2.$x('//*[@id="sidebar"]/div/ul[2]/li['+ i +']/a');
 
       if(el2 == null){
-        console.log("hehe")
         break;
       }
 
@@ -130,8 +130,23 @@ async function checkIfUpdated(url){
       i += 1;
     }
 
+    var courseListJSON = JSON.stringify(courses);
+    fs.writeFile('courses.json', courseListJSON, (err) => {if (err) throw err;});
+    exec("mongoimport --jsonArray --db GuelphCareerPlanner --collection Courses --file courses.json", (error, stdout, stderr) => {
+        if (error) {
+            console.log(`error: ${error.message}`);
+            return;
+        }
+        if (stderr) {
+            console.log(`stderr: ${stderr}`);
+            return;
+        }
+        console.log(`stdout: ${stdout}`);
+    });
 
   }
+
+  browser.close();
 
 }
 
@@ -160,6 +175,18 @@ res.sendFile(path.join(__dirname + '/node_modules/angular/angular-route.min.js')
 
 app.get('/node_modules/angular/angular-route.min.js.map', function(req, res) {
 res.sendFile(path.join(__dirname + '/node_modules/angular/angular-route.min.js.map'));
+});
+
+app.get('/Bootstrap/css/bootstrap.min.css', function(req, res) {
+res.sendFile(path.join(__dirname + '/Bootstrap/css/bootstrap.min.css'));
+});
+
+app.get('/Bootstrap/css/bootstrap.min.css.map', function(req, res) {
+res.sendFile(path.join(__dirname + '/Bootstrap/css/bootstrap.min.css.map'));
+});
+
+app.get('/Bootstrap/js/bootstrap.min.js', function(req, res) {
+res.sendFile(path.join(__dirname + '/Bootstrap/js/bootstrap.min.js'));
 });
 
 //startup our app at http://localhost:3000
