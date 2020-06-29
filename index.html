@@ -65,21 +65,45 @@
       <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Search Courses</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <div class="container">
+              <div class="row">
+                <form class="form-inline">
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search Courses" aria-label="Search">
+                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+                <button type="button" class="close" style="padding-top: 5px" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="row">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                  Filter
+                </button>
+              </div>
+              <div class="collapse row" id="collapseExample">
+                <div class="card card-body">
+                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-body">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse fermentum id purus lacinia consequat. Mauris sed fermentum ligula. In id velit et purus mattis fermentum ut finibus metus. Sed id nisl sed erat cursus aliquet. Quisque molestie massa non est mattis aliquam. Aenean consequat metus nec quam pretium vulputate. Sed dictum, est sit amet tempor ultrices, massa elit finibus mauris, nec tincidunt justo elit nec nunc.
-
-Praesent et lacus a metus facilisis posuere ut eu risus. In hac habitasse platea dictumst. Nulla dictum cursus elementum. Phasellus at augue erat. In iaculis nisl vel imperdiet molestie. Ut pretium nisi et purus sodales, a mollis quam bibendum. Phasellus id hendrerit lacus, ac tempor ex. Fusce mattis odio non venenatis mollis. Curabitur at rhoncus ex, at finibus metus. Maecenas faucibus sapien at mauris gravida, blandit viverra elit porttitor. Donec laoreet venenatis ligula vel faucibus.
-
-Maecenas ac ante eget lectus imperdiet pulvinar. Curabitur mollis justo et erat tincidunt commodo. Sed eros quam, pretium condimentum magna ac, lobortis tempor augue. Aliquam at elit eu neque tincidunt elementum. Phasellus vitae lectus elit. Morbi nec interdum ligula, sit amet mollis quam. Curabitur bibendum sem nec tortor viverra, eget interdum ligula gravida. Ut auctor, lectus in feugiat aliquet, massa libero ultrices leo, nec suscipit augue mi sed lacus.
-
-Cras commodo ex et elementum bibendum. Nullam vel sodales arcu. Curabitur sapien sapien, volutpat eu ligula at, dapibus cursus dui. Vivamus rhoncus mattis faucibus. Quisque sit amet augue consectetur, congue nulla id, cursus est. Vivamus ut leo neque. Donec leo magna, rutrum at rhoncus id, suscipit interdum libero. Aenean feugiat consectetur fermentum. Curabitur ornare nulla sit amet ex cursus, sed tincidunt est fermentum. Curabitur in euismod turpis.
-
-Cras velit felis, posuere non lobortis finibus, finibus nec dui. Pellentesque consectetur tincidunt diam. Etiam tempor enim vitae leo maximus, nec ornare elit suscipit. Sed est dolor, rutrum ut interdum facilisis, maximus quis nisi. Aliquam porttitor congue diam at commodo. Vivamus pulvinar arcu vitae nibh fringilla tincidunt. Curabitur ac orci vestibulum, auctor libero vel, lacinia erat. Sed vel ante et arcu fermentum tempor. Quisque pellentesque ipsum nisi, vel lacinia justo elementum nec. Donec scelerisque dolor a tortor suscipit sodales. Curabitur enim neque, congue gravida nisl vel, feugiat finibus sem.
+            <div class="accordion" id="courseList">
+              <div class="card">
+                <div class="card-header" id="heading1">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                      COURSE CODE : COURSE TITLE
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#courseList">
+                  <div class="card-body">
+                    This is where the details of the course will reside
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
