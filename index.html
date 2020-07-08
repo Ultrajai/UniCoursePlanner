@@ -68,8 +68,8 @@
             <div class="container">
               <div class="row">
                 <form class="form-inline">
-                  <input class="form-control mr-sm-2" type="search" placeholder="Search Courses" aria-label="Search">
-                  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                  <input class="form-control mr-sm-2" type="search" placeholder="Search Courses" aria-label="Search" ng-model="searchText">
+                  <button class="btn btn-outline-success my-2 my-sm-0" ng-click="SearchCourses()" type="submit">Search</button>
                 </form>
                 <button type="button" class="close" style="padding-top: 5px" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -88,16 +88,16 @@
             </div>
           </div>
           <div class="modal-body">
-            <div class="accordion" id="courseList" ng-repeat="course in courses">
+            <div class="accordion" id="courseList" ng-repeat="course in courses | CourseFilter : searchString | limitTo : 100">
               <div class="card">
-                <div class="card-header" id="heading1">
+                <div class="card-header" id="heading{{course._id}}">
                   <h2 class="mb-0">
-                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse{{course._id}}" aria-expanded="false" aria-controls="collapse1">
                       {{course.Code}} : {{course.Title}}
                     </button>
                   </h2>
                 </div>
-                <div id="collapse1" class="collapse" aria-labelledby="heading1" data-parent="#courseList">
+                <div id="collapse{{course._id}}" class="collapse" aria-labelledby="heading{{course._id}}" data-parent="#courseList">
                   <div class="card-body">
                     This is where the details of the course will reside
                   </div>
