@@ -10,6 +10,8 @@ var mongoose = require('mongoose');
 //set our port
 const port = 3000
 
+//models
+var Course = mongoose.model('Course', {Code : {type: String, default: ''}, Title : {type: String, default: ''}, Availability : {type: String, default: ''}, Credits : {type: String, default: ''}, Offerings : {type: String, default: ''}, Equates : {type: String, default: ''}}, 'Courses');
 //config files
 var db = require('./config/db');
 mongoose.connect(db.url);
@@ -189,5 +191,13 @@ app.get('/Bootstrap/js/bootstrap.min.js', function(req, res) {
 res.sendFile(path.join(__dirname + '/Bootstrap/js/bootstrap.min.js'));
 });
 
+app.get('/GetAllCourses', function(req, res) {
+  //use mongoose to get all students in the database
+    Course.find(function(err, results){
+        if(err)
+            res.send(err);
+        res.send(results); // return all students in JSON format
+    });
+});
 //startup our app at http://localhost:3000
 app.listen(port, () => console.log('example app listening on port ' + port +  '!'));

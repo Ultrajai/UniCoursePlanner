@@ -88,12 +88,12 @@
             </div>
           </div>
           <div class="modal-body">
-            <div class="accordion" id="courseList">
+            <div class="accordion" id="courseList" ng-repeat="course in courses">
               <div class="card">
                 <div class="card-header" id="heading1">
                   <h2 class="mb-0">
                     <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
-                      COURSE CODE : COURSE TITLE
+                      {{course.Code}} : {{course.Title}}
                     </button>
                   </h2>
                 </div>
