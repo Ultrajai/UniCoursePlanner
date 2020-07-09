@@ -88,22 +88,49 @@
             </div>
           </div>
           <div class="modal-body">
-            <div class="accordion" id="courseList" ng-repeat="course in courses | CourseFilter : searchString | limitTo : 100">
+            <div class="accordion" id="courseList" ng-repeat="course in filteredCourses = ( courses | CourseFilter : searchString | limitTo : 100)">
               <div class="card">
                 <div class="card-header" id="heading{{course._id}}">
                   <h2 class="mb-0">
                     <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapse{{course._id}}" aria-expanded="false" aria-controls="collapse1">
-                      {{course.Code}} : {{course.Title}}
+                      {{course.Code}} : {{course.Title}} <div class="btn btn-outline-primary btn-sm disabled"> {{course.Credits}}</div>
+                      <div class="btn-group btn-group-sm float-right" role="group" aria-label="Basic example">
+                        <div ng-show="course.Availability.indexOf('F') > -1 || course.Availability.indexOf('U') > -1" class="btn btn-warning disabled">Fall</div>
+                        <div ng-show="course.Availability.indexOf('W') > -1 || course.Availability.indexOf('U') > -1" class="btn btn-info disabled">Winter</div>
+                        <div ng-show="course.Availability.indexOf('S') > -1 || course.Availability.indexOf('U') > -1" class="btn btn-primary disabled">Summer</div>
+                      </div>
                     </button>
+
                   </h2>
                 </div>
                 <div id="collapse{{course._id}}" class="collapse" aria-labelledby="heading{{course._id}}" data-parent="#courseList">
                   <div class="card-body">
-                    This is where the details of the course will reside
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-2">
+                          Description
+                        </div>
+                        <div class="col">
+                          {{course.Description}}
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-2">
+                          Offerings
+                        </div>
+                        <div class="col">
+                          {{course.Offerings}}
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <button type="button" class="btn btn-success">Add Course</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div ng-hide="filteredCourses.length" class="text-secondary text-center">No Results...<br/>Try searching for a course with the search bar or using the filters</div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

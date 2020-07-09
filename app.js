@@ -20,17 +20,18 @@ UniCoursePlanner.filter('CourseFilter', function(){
       }
       // Otherwise, continue.
       else {
-           // Convert filter text to lower case.
-           var term = searchTerm.toLowerCase();
            // Return the array and filter it by looking for any occurrences of the search term in each items Code or Title
            return dataArray.filter(function(item){
-              var termInCode = item.Code.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
-              var termInTitle = item.Title.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
-              return termInCode || termInTitle;
-           });
+             term = this.toLowerCase();
+             var termInCode = item.Code.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
+             var termInTitle = item.Title.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
+             return termInCode || termInTitle;
+           }, searchTerm);
       }
   }
 });
+
+
 
 UniCoursePlanner.controller("MainController", function($scope, $http){
 

@@ -36,7 +36,7 @@ async function scrapeCourses(url, browser){
 
     var titles = await courseList[i].$('.title');
     var descriptions = await courseList[i].$('.description');
-    var offerings = await courseList[i].$('.offering');
+    var offerings = await courseList[i].$('.offerings');
     var restrictions = await courseList[i].$('.restrictions');
     var prereqs = await courseList[i].$('.prereqs');
     var equates = await courseList[i].$('.equates');
