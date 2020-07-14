@@ -40,14 +40,25 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
   $scope.season = ['Fall', 'Winter', 'Summer'];
   $scope.semesters = [];
   $scope.searchString = "";
+  $scope.selectedSemester = 0;
 
-  $scope.AddSemester = function(){
-    $scope.semesters.push({num : $scope.numOfSemesters, season : $scope.season[$scope.numOfSemesters % 3]});
-    $scope.numOfSemesters += 1;
+  $scope.AddSemesterListener = function(){
+    $scope.semesters.push({num : $scope.numOfSemesters, season : $scope.season[$scope.numOfSemesters % 3], courses : []});
+    $scope.numOfSemesters = $scope.numOfSemesters + 1;
   };
 
-  $scope.SearchCourses = function(){
+  // updates the search criteria when entered or search is selected
+  $scope.SearchCoursesListener = function(){
     $scope.searchString = $scope.searchText;
+  };
+
+  $scope.AddCoursesListener = function(courseData){
+    $scope.semesters[$scope.selectedSemester].courses.push(courseData);
+  };
+
+  // A listener that selects the semester where the user will add courses to
+  $scope.SemesterSelecterListener = function(semester){
+    $scope.selectedSemester = semester.num
   };
 
   //get all courses so that the webapp has access to all data from startup
