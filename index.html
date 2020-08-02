@@ -43,9 +43,14 @@
           </div>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">CIS*1500</li>
-            <li class="list-group-item">CIS*1250</li>
-            <li class="list-group-item">CIS*1000</li>
+            <li class="list-group-item" ng-repeat="course in semester.courses">
+              <div class="row">
+                <div class="col text-left" style="padding-top: 7px;">{{course.Code}} : {{course.Title}}</div>
+                <div class="col text-right">
+                  <button class="btn btn-danger" ng-click="RemoveCourse(semester, course)">Remove</button>
+                </div>
+              </div>
+            </li>
           </ul>
       </div>
       <br/>

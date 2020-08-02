@@ -3,7 +3,7 @@ const fs = require('fs');
 const {exec} = require('child_process');
 
 module.exports = {
-  scrapeCOurses : async function(url, browser){
+  ScrapeCourses : async function(url, browser){
     const page = await browser.newPage();
     await page.goto(url, {timeout: 0, waitUntil: 'networkidle0'});
 
@@ -73,7 +73,7 @@ module.exports = {
       indexCourses += 1;
     }
   },
-  checkIfUpdated : async function(url, db){
+  CheckIfUpdated : async function(url, db){
     const browser = await puppeteer.launch({
           headless : true,
           devtools : false
@@ -105,7 +105,7 @@ module.exports = {
         const link = await el2.getProperty('href');
         const rawLink = await link.jsonValue();
 
-        await module.exports.scrapeCourses(rawLink.toString(), browser);
+        await module.exports.ScrapeCourses(rawLink.toString(), browser);
         i += 1;
       }
 

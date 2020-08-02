@@ -54,11 +54,32 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
 
   $scope.AddCoursesListener = function(courseData){
     $scope.semesters[$scope.selectedSemester].courses.push(courseData);
+
+    //send course data to validate
+    $http({
+      method: 'POST',
+      url: '/CourseValidation',
+      data: $.param({course : courseData, semesters : $scope.semesters, selectedSemester : $scope.selectedSemester}),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+    }).then(function successCallback(response) {
+        console.log(response.data)
+      }, function errorCallback(response) {
+        console.log(response);
+      });
+
   };
 
   // A listener that selects the semester where the user will add courses to
   $scope.SemesterSelecterListener = function(semester){
     $scope.selectedSemester = semester.num
+  };
+
+  $scope.RemoveCourse = function(semester, courseToDelete){
+    for(var i = 0; i < $scope.semesters[semester.num].courses.length; i++){
+      if(courseToDelete.Code == $scope.semesters[semester.num].courses[i].Code){
+        $scope.semesters[semester.num].courses.splice(i, 1);
+      }
+    }
   };
 
   //get all courses so that the webapp has access to all data from startup

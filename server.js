@@ -2,10 +2,12 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var cdc = require('./cdc')
 //set our port
 const port = 3000
+app.use(bodyParser.urlencoded({ extended: false }))
 
 //models
 var Course = mongoose.model('Course', {Code : {type: String, default: ''}, Title : {type: String, default: ''}, Availability : {type: String, default: ''}, Credits : {type: String, default: ''}, Offerings : {type: String, default: ''}, Equates : {type: String, default: ''}}, 'Courses');
@@ -17,7 +19,7 @@ mongoose.connect(db.url);
 // update dbs
 var courses = [];
 var indexCourses = 0;
-cdc.checkIfUpdated('https://www.uoguelph.ca/registrar/calendars/undergraduate/current/', db);
+cdc.CheckIfUpdated('https://www.uoguelph.ca/registrar/calendars/undergraduate/current/', db);
 
 //front end routes
 app.get('/', function(req, res) {
@@ -63,6 +65,10 @@ app.get('/GetAllCourses', function(req, res) {
             res.send(err);
         res.send(results); // return all students in JSON format
     });
+});
+
+app.post('/CourseValidation', function(req, res){
+  console.log(req.body['selectedSemester']);
 });
 //startup our app at http://localhost:3000
 app.listen(port, () => console.log('example app listening on port ' + port +  '!'));
