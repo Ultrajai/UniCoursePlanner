@@ -4,10 +4,11 @@ const app = express();
 const path = require('path');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var cdc = require('./cdc')
+var cdc = require('./cdc');
+var cdp = require('./cdp');
 //set our port
 const port = 3000
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 //models
 var Course = mongoose.model('Course', {Code : {type: String, default: ''}, Title : {type: String, default: ''}, Availability : {type: String, default: ''}, Credits : {type: String, default: ''}, Offerings : {type: String, default: ''}, Equates : {type: String, default: ''}}, 'Courses');
@@ -68,7 +69,11 @@ app.get('/GetAllCourses', function(req, res) {
 });
 
 app.post('/CourseValidation', function(req, res){
-  console.log(req.body['selectedSemester']);
+  console.log(req.body);
+
+  console.log(cdp.HavePrereq(req.body.semesters, req.body.course));
+
+  res.send('Success!!!');
 });
 //startup our app at http://localhost:3000
 app.listen(port, () => console.log('example app listening on port ' + port +  '!'));

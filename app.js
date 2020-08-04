@@ -53,16 +53,15 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
   };
 
   $scope.AddCoursesListener = function(courseData){
-    $scope.semesters[$scope.selectedSemester].courses.push(courseData);
 
     //send course data to validate
     $http({
       method: 'POST',
       url: '/CourseValidation',
-      data: $.param({course : courseData, semesters : $scope.semesters, selectedSemester : $scope.selectedSemester}),
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+      data: {course : courseData, semesters : $scope.semesters, selectedSemester: $scope.selectedSemester},
     }).then(function successCallback(response) {
         console.log(response.data)
+        $scope.semesters[$scope.selectedSemester].courses.push(courseData);
       }, function errorCallback(response) {
         console.log(response);
       });
