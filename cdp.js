@@ -13,14 +13,64 @@ module.exports = {
     prereqsObj = GetSVPrereqsAndSepValue(courseToAddRemove.Prerequisites);
     console.log(prereqsObj);
 
-    var fullfilledPrereqs = new Array(prereqsObj.separatedPrereqs.length);
-    fullfilledPrereqs.fill(false);
+    var fulfilledPrereqs = new Array(prereqsObj.separatedPrereqs.length);
 
     for (var i = 0; i < prereqsObj.separatedPrereqs.length; i++) {
-      fullfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester);
+      fulfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester);
     }
 
-    console.log(fullfilledPrereqs);
+    console.log(fulfilledPrereqs);
+
+    if(prereqsObj.separatedPrereqs.length == 0)
+    {
+      return true;
+    }
+    else if(prereqsObj.separatedPrereqs.length != 0 && selectedSemester == 0)
+    {
+      return false;
+    }
+    else if(prereqsObj.separationValue.match(/(or|1 of)/g) != null)
+    {
+      var isfulfilled = fulfilledPrereqs[0];
+
+      for (var i = 1; i < fulfilledPrereqs.length; i++)
+      {
+        isfulfilled = isfulfilled || fulfilledPrereqs[i];
+      }
+
+      return isfulfilled;
+    }
+    else if(prereqsObj.separationValue.match(/(and|[,])/g) != null)
+    {
+      var isfulfilled = fulfilledPrereqs[0];
+
+      for (var i = 1; i < fulfilledPrereqs.length; i++)
+      {
+        isfulfilled = isfulfilled && fulfilledPrereqs[i];
+      }
+
+      return isfulfilled;
+    }
+    else if(prereqsObj.separationValue.match(/(2 of)/g) != null)
+    {
+
+      for (var i = 0; i < fulfilledPrereqs.length; i++)
+      {
+        for(var j = i + 1; j < fulfilledPrereqs.length; j++)
+        {
+          if(fulfilledPrereqs[i] && fulfilledPrereqs[j] == true)
+          {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+    else
+    {
+      console.log('a case i didnt think of');
+    }
 
     return null;
 
@@ -37,21 +87,87 @@ module.exports = {
 }
 
 // this recursive function checks if the courses are completed and returns a true/false value
-function ResolvePrereqs(separatedPrereq, separationValue, semesters, selectedSemester)
+function ResolvePrereqs(prereq, separationValue, semesters, selectedSemester)
 {
   // this is the base case of just one course to check
-  if(separatedPrereq[0].match(/([\(]|[\[])/g) == null)
+  if(prereq[0].match(/([\(]|[\[])/g) == null)
   {
+
     for (var i = 0; i < selectedSemester; i++) {
       for (var j = 0; j < semesters[i].courses.length; j++) {
-        if(semesters[i].courses[j].Code == separatedPrereq)
+        console.log(semesters[i].courses[j].Code + ' ' + prereq);
+        if(semesters[i].courses[j].Code.trim() == prereq.trim())
         {
+          console.log('returning true for ' + prereq);
           return true;
+        }
+      }
+    }
+
+    return false;
+
+  }
+  else
+  {
+    var prereqsObj = {separatedPrereqs : [], separationValue : ''};
+    prereq = prereq.slice(1, prereq.length - 1);
+
+    prereqsObj = GetSVPrereqsAndSepValue(prereq);
+    console.log(prereqsObj);
+
+    var fulfilledPrereqs = new Array(prereqsObj.separatedPrereqs.length);
+
+    // recurse until a bool is returned
+    for (var i = 0; i < prereqsObj.separatedPrereqs.length; i++)
+    {
+      fulfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester);
+    }
+
+    console.log(fulfilledPrereqs);
+
+    if(prereqsObj.separationValue.match(/(or|1 of)/g) != null)
+    {
+      var isfulfilled = fulfilledPrereqs[0];
+
+      for (var i = 1; i < fulfilledPrereqs.length; i++)
+      {
+        isfulfilled = isfulfilled || fulfilledPrereqs[i];
+      }
+
+      return isfulfilled;
+    }
+    else if(prereqsObj.separationValue.match(/(and|[,])/g) != null)
+    {
+      var isfulfilled = fulfilledPrereqs[0];
+
+      for (var i = 1; i < fulfilledPrereqs.length; i++)
+      {
+        isfulfilled = isfulfilled && fulfilledPrereqs[i];
+      }
+
+      return isfulfilled;
+    }
+    else if(prereqsObj.separationValue.match(/(2 of)/g) != null)
+    {
+
+      for (var i = 0; i < fulfilledPrereqs.length; i++)
+      {
+        for(var j = i + 1; j < fulfilledPrereqs.length; j++)
+        {
+          if(fulfilledPrereqs[i] && fulfilledPrereqs[j] == true)
+          {
+            return true;
+          }
         }
       }
 
       return false;
     }
+    else
+    {
+      console.log('a case i didnt think of');
+    }
+
   }
 }
 

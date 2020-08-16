@@ -71,9 +71,7 @@ app.get('/GetAllCourses', function(req, res) {
 app.post('/CourseValidation', function(req, res){
   console.log(req.body);
 
-  console.log(cdp.HavePrereq(req.body.semesters, req.body.course, req.body.selectedSemester));
-
-  res.send('Success!!!');
+  res.send('The student can take the course: ' + cdp.HavePrereq(req.body.semesters, req.body.course, req.body.selectedSemester));
 });
 //startup our app at http://localhost:3000
 app.listen(port, () => console.log('example app listening on port ' + port +  '!'));
