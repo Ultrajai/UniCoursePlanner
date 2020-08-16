@@ -1,5 +1,5 @@
 module.exports = {
-  HavePrereq : function (semesters, courseToAddRemove){
+  HavePrereq : function (semesters, courseToAddRemove, selectedSemester){
     // first version : CIS*1000, CUS*2000
     // second version : 1 of CIS*1000, CIS*3000
     // third version : CIS*1000, (1 of CIS*2000, CIS*3000)
@@ -9,8 +9,21 @@ module.exports = {
     // seventh version : 4.00 credits including ABC*1000, ABC*2000
     // eighth version : ABC*1000 (ABC*1000 may be taken concurrently)
 
-    // regular expression that looks for the course codes only that are listed
-    return courseToAddRemove.Prerequisites.match(/([\(]?((1 of )?[A-Z]{3,5}[*][0-9][0-9][0-9][0-9][,]?[ ]?([a-z]{2,3}[ ])?)+[\)]?)+/g);
+    var prereqsObj = {separatedPrereqs : [], separationValue : ''};
+    prereqsObj = GetSVPrereqsAndSepValue(courseToAddRemove.Prerequisites);
+    console.log(prereqsObj);
+
+    var fullfilledPrereqs = new Array(prereqsObj.separatedPrereqs.length);
+    fullfilledPrereqs.fill(false);
+
+    for (var i = 0; i < prereqsObj.separatedPrereqs.length; i++) {
+      fullfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester);
+    }
+
+    console.log(fullfilledPrereqs);
+
+    return null;
+
   },
   HaveEquate : function (){
     //something
@@ -21,4 +34,101 @@ module.exports = {
   Restricted : function(){
     //something
   }
+}
+
+// this recursive function checks if the courses are completed and returns a true/false value
+function ResolvePrereqs(separatedPrereq, separationValue, semesters, selectedSemester)
+{
+  // this is the base case of just one course to check
+  if(separatedPrereq[0].match(/([\(]|[\[])/g) == null)
+  {
+    for (var i = 0; i < selectedSemester; i++) {
+      for (var j = 0; j < semesters[i].courses.length; j++) {
+        if(semesters[i].courses[j].Code == separatedPrereq)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }
+}
+
+// returns the separated value prereqs and the separations value in one object
+function GetSVPrereqsAndSepValue(Prerequisites)
+{
+  // array to hold value separated prereqs
+  var prereqs = {separatedPrereqs : [], separationValue : ''};
+  // string to hold only the course prereqs
+  var prereqString = Prerequisites.match(/([\[]?[\(]?(([0-9] of )?[A-Z]{3,5}[*][0-9][0-9][0-9][0-9][,]?[ ]?([a-z]{2,3}[ ])?)+[\)]?[\]]?[,]?[ ]?([a-z]{2,3}[ ])?)+/g);
+
+  // puts the value separated prereqs
+  for (var i = 0; i < Prerequisites.length; i++) {
+    if(Prerequisites[i] == '[')
+    {
+      for (var j = i; j < Prerequisites.length; j++) {
+        if(Prerequisites[j] == ']')
+        {
+          prereqs.separatedPrereqs.push(Prerequisites.substring(i, j + 1));
+          i = j;
+          break;
+        }
+      }
+    }
+    else if(Prerequisites[i] == '(')
+    {
+      for (var j = i; j < Prerequisites.length; j++) {
+        if(Prerequisites[j] == ')')
+        {
+          prereqs.separatedPrereqs.push(Prerequisites.substring(i, j + 1));
+          i = j;
+          break;
+        }
+      }
+    }
+    else if(Prerequisites[i].match(/[A-Z]/g) != null)
+    {
+      for (var j = i; j < Prerequisites.length; j++) {
+        if(Prerequisites[j] == ' ' || j == (Prerequisites.length - 1))
+        {
+          prereqs.separatedPrereqs.push(Prerequisites.substring(i, j + 1));
+          i = j;
+          break;
+        }
+        else if(Prerequisites[j] == ',')
+        {
+          prereqs.separatedPrereqs.push(Prerequisites.substring(i, j));
+          i = j - 1;
+          break;
+        }
+      }
+    }
+  }
+
+  // this is for finding the separation value
+  for (var i = 0; i < Prerequisites.length; i++) {
+    if(Prerequisites.substring(0, 4).match(/([0-9] of)/) != null)
+    {
+      prereqs.separationValue = Prerequisites.substring(0, 4);
+      break;
+    }
+    else if(Prerequisites[i] == ',')
+    {
+      prereqs.separationValue = ',';
+      break;
+    }
+    else if(Prerequisites.substring(i, i + 2).match(/(or)/) != null)
+    {
+      prereqs.separationValue = 'or';
+    }
+    else if(Prerequisites.substring(i, i + 3).match(/(and)/) != null)
+    {
+      prereqs.separationValue = 'and';
+    }
+  }
+
+  console.log(prereqString);
+
+  return prereqs;
 }

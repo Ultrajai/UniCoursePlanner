@@ -71,7 +71,7 @@ app.get('/GetAllCourses', function(req, res) {
 app.post('/CourseValidation', function(req, res){
   console.log(req.body);
 
-  console.log(cdp.HavePrereq(req.body.semesters, req.body.course));
+  console.log(cdp.HavePrereq(req.body.semesters, req.body.course, req.body.selectedSemester));
 
   res.send('Success!!!');
 });
