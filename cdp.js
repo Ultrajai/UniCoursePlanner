@@ -10,45 +10,46 @@ module.exports = {
     // seventh version : 4.00 credits including ABC*1000, ABC*2000
     // eighth version : ABC*1000 (ABC*1000 may be taken concurrently)
 
-    /*if(addingCourse)
+    if(addingCourse)
     {
+      // This checks if a course can be taken in the same semester
+      var concurrentCourseStrings = courseToAddRemove.Prerequisites.match(/[A-Z]{3,5}[*][0-9][0-9][0-9][0-9]( may be taken concurrently)/g);
+      var concurrentCourses = [];
 
+      if(concurrentCourseStrings != null)
+      {
+        for (var i = 0; i < concurrentCourseStrings.length; i++) {
+          concurrentCourses = concurrentCourseStrings[i].match(/[A-Z]{3,5}[*][0-9][0-9][0-9][0-9]/g);
+        }
+      }
+
+      console.log('These courses can be taken concurrently ' + concurrentCourses);
+
+      return AddingCoursePrereqCheck(semesters, courseToAddRemove, selectedSemester, concurrentCourses);
     }
     else
     {
-
-    }*/
-    // This checks if a course can be taken in the same semester
-    var concurrentCourseStrings = courseToAddRemove.Prerequisites.match(/[A-Z]{3,5}[*][0-9][0-9][0-9][0-9]( may be taken concurrently)/g);
-    var concurrentCourses = [];
-
-    if(concurrentCourseStrings != null)
-    {
-      for (var i = 0; i < concurrentCourseStrings.length; i++) {
-        concurrentCourses = concurrentCourseStrings[i].match(/[A-Z]{3,5}[*][0-9][0-9][0-9][0-9]/g);
-      }
+      console.log('evaluating removed course');
     }
 
 
-
-    console.log('These courses can be taken concurrently ' + concurrentCourses);
-
-    return AddingCoursePrereqCheck(semesters, courseToAddRemove, selectedSemester, concurrentCourses);
-
   },
-  HaveEquate : function (){
+  HaveEquate : function(){
     //something
   },
-  TooManyCred : function (){
+  TooManyCred : function(){
     //something
   },
   Restricted : function(){
+    //something
+  },
+  AlreadyTaken : function(){
     //something
   }
 }
 
 // This checks all courses prereqs in the event of a course removal
-function RemovingCoursePrereqCheck(semesters, courseToRemove, selectedSemester)
+function RemovingCoursePrereqCheck(semesters, courseToRemove, selectedSemester, concurrentCourses)
 {
 
 }
@@ -60,6 +61,11 @@ function AddingCoursePrereqCheck(semesters, courseToAdd, selectedSemester, concu
   var prereqsObj = {separatedPrereqs : [], separationValue : ''};
   prereqsObj = GetSVPrereqsAndSepValue(courseToAdd.Prerequisites);
   console.log(prereqsObj);
+
+  if(prereqsObj.separatedPrereqs.length == 0)
+  {
+    return true;
+  }
 
   var fulfilledPrereqs = new Array(prereqsObj.separatedPrereqs.length);
 
@@ -175,7 +181,7 @@ function ResolvePrereqs(prereq, separationValue, semesters, selectedSemester, co
     // recurse until a bool is returned
     for (var i = 0; i < prereqsObj.separatedPrereqs.length; i++)
     {
-      fulfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester);
+      fulfilledPrereqs[i] = ResolvePrereqs(prereqsObj.separatedPrereqs[i], prereqsObj.separationValue,  semesters, selectedSemester, concurrentCourses);
     }
 
     console.log(fulfilledPrereqs);
@@ -235,68 +241,71 @@ function GetSVPrereqsAndSepValue(Prerequisites)
   // string to hold only the course prereqs
   var prereqString = Prerequisites.match(/([\[]?[\(]?(([0-9] of )?[A-Z]{3,5}[*][0-9][0-9][0-9][0-9]([,][ ])?([ ][a-z]{2,3}[ ])?)+[\)]?[\]]?([,][ ])?([ ][a-z]{2,3}[ ])?)+/g);
 
-  // puts the value separated prereqs
-  for (var i = 0; i < prereqString[0].length; i++) {
-    if(prereqString[0][i] == '[')
-    {
-      for (var j = i; j < prereqString[0].length; j++) {
-        if(prereqString[0][j] == ']')
-        {
-          prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
-          i = j;
-          break;
+  if(prereqString != null)
+  {
+    // puts the value separated prereqs
+    for (var i = 0; i < prereqString[0].length; i++) {
+      if(prereqString[0][i] == '[')
+      {
+        for (var j = i; j < prereqString[0].length; j++) {
+          if(prereqString[0][j] == ']')
+          {
+            prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
+            i = j;
+            break;
+          }
+        }
+      }
+      else if(prereqString[0][i] == '(')
+      {
+        for (var j = i; j < prereqString[0].length; j++) {
+          if(prereqString[0][j] == ')')
+          {
+            prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
+            i = j;
+            break;
+          }
+        }
+      }
+      else if(prereqString[0][i].match(/[A-Z]/g) != null)
+      {
+        for (var j = i; j < prereqString[0].length; j++) {
+          if(prereqString[0][j] == ' ' || j == (prereqString[0].length - 1))
+          {
+            prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
+            i = j;
+            break;
+          }
+          else if(prereqString[0][j] == ',')
+          {
+            prereqs.separatedPrereqs.push(prereqString[0].substring(i, j));
+            i = j - 1;
+            break;
+          }
         }
       }
     }
-    else if(prereqString[0][i] == '(')
-    {
-      for (var j = i; j < prereqString[0].length; j++) {
-        if(prereqString[0][j] == ')')
-        {
-          prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
-          i = j;
-          break;
-        }
-      }
-    }
-    else if(prereqString[0][i].match(/[A-Z]/g) != null)
-    {
-      for (var j = i; j < prereqString[0].length; j++) {
-        if(prereqString[0][j] == ' ' || j == (prereqString[0].length - 1))
-        {
-          prereqs.separatedPrereqs.push(prereqString[0].substring(i, j + 1));
-          i = j;
-          break;
-        }
-        else if(prereqString[0][j] == ',')
-        {
-          prereqs.separatedPrereqs.push(prereqString[0].substring(i, j));
-          i = j - 1;
-          break;
-        }
-      }
-    }
-  }
 
-  // this is for finding the separation value
-  for (var i = 0; i < prereqString[0].length; i++) {
-    if(prereqString[0].substring(0, 4).match(/([0-9] of)/) != null)
-    {
-      prereqs.separationValue = prereqString[0].substring(0, 4);
-      break;
-    }
-    else if(prereqString[0][i] == ',')
-    {
-      prereqs.separationValue = ',';
-      break;
-    }
-    else if(prereqString[0].substring(i, i + 2).match(/(or)/) != null)
-    {
-      prereqs.separationValue = 'or';
-    }
-    else if(prereqString[0].substring(i, i + 3).match(/(and)/) != null)
-    {
-      prereqs.separationValue = 'and';
+    // this is for finding the separation value
+    for (var i = 0; i < prereqString[0].length; i++) {
+      if(prereqString[0].substring(0, 4).match(/([0-9] of)/) != null)
+      {
+        prereqs.separationValue = prereqString[0].substring(0, 4);
+        break;
+      }
+      else if(prereqString[0][i] == ',')
+      {
+        prereqs.separationValue = ',';
+        break;
+      }
+      else if(prereqString[0].substring(i, i + 2).match(/(or)/) != null)
+      {
+        prereqs.separationValue = 'or';
+      }
+      else if(prereqString[0].substring(i, i + 3).match(/(and)/) != null)
+      {
+        prereqs.separationValue = 'and';
+      }
     }
   }
 

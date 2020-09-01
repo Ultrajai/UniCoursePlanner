@@ -23,8 +23,8 @@ UniCoursePlanner.filter('CourseFilter', function(){
            // Return the array and filter it by looking for any occurrences of the search term in each items Code or Title
            return dataArray.filter(function(item){
              term = this.toLowerCase();
-             var termInCode = item.Code.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
-             var termInTitle = item.Title.toLowerCase().indexOf(term) > -1; // returns true if there is ansintance of the term
+             var termInCode = item.Code.toLowerCase().indexOf(term) > -1; // returns true if there is an instance of the term
+             var termInTitle = item.Title.toLowerCase().indexOf(term) > -1; // returns true if there is an instance of the term
              return termInCode || termInTitle;
            }, searchTerm);
       }
@@ -58,7 +58,7 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
     $http({
       method: 'POST',
       url: '/CourseValidation',
-      data: {course : courseData, semesters : $scope.semesters, selectedSemester: $scope.selectedSemester},
+      data: {course : courseData, semesters : $scope.semesters, selectedSemester: $scope.selectedSemester, addingCourse : true},
     }).then(function successCallback(response) {
         console.log(response.data)
         $scope.semesters[$scope.selectedSemester].courses.push(courseData);
@@ -79,6 +79,17 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
         $scope.semesters[semester.num].courses.splice(i, 1);
       }
     }
+
+    //send course data to validate
+    $http({
+      method: 'POST',
+      url: '/CourseValidation',
+      data: {course : courseToDelete, semesters : $scope.semesters, selectedSemester: semester.num, addingCourse : false},
+    }).then(function successCallback(response) {
+        console.log(response.data)
+      }, function errorCallback(response) {
+        console.log(response);
+      });
   };
 
   //get all courses so that the webapp has access to all data from startup
