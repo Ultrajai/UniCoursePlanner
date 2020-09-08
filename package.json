@@ -1,7 +1,7 @@
 {
   "name": "unicourseplanner",
   "version": "1.0.0",
-  "description": "This is a course planner web application for the University of Guelph. All data is obtained from Guelph schedule of dates.",
+  "description": "This is a course planner web application for the University of Guelph. All data is obtained from Guelph Undergraduate Calendar.",
   "main": "server.js",
   "scripts": {
     "test": "test"
