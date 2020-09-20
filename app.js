@@ -92,7 +92,7 @@ UniCoursePlanner.controller("MainController", function($scope, $http){
       });
   };
 
-  //get all courses so that the webapp has access to all data from startup
+  //get all courses so that the webapp has access to all data from startup definitely not keeping this afterwards
   $http({
     method: 'GET',
     url: '/GetAllCourses'
